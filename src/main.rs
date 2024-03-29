@@ -14,6 +14,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 #[template(path = "index.html")]
 struct IndexTemplate<'a> {
     name: &'a str,
+    counter: u16,
 }
 
 #[tokio::main]
@@ -34,10 +35,15 @@ async fn main() -> anyhow::Result<()> {
     let port = 3000;
     let addr = std::net::SocketAddr::from(([0, 0, 0, 0], port));
 
-    let app = Router::new().route("/", get(index)).nest_service(
-        "/assets",
-        ServeDir::new(format!("{}/assets", assets_path.to_str().unwrap())),
-    );
+    let api_router = Router::new().route("/hello", get(hello_from_the_server));
+
+    let app = Router::new()
+        .nest("/api", api_router)
+        .route("/", get(index))
+        .nest_service(
+            "/assets",
+            ServeDir::new(format!("{}/assets", assets_path.to_str().unwrap())),
+        );
 
     // run our app with hyper, listening globally on port 3000
     info!("router initialized, now listening on port {}", port);
@@ -50,8 +56,15 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn index() -> impl IntoResponse {
-    let template = IndexTemplate { name: "world" };
+    let template = IndexTemplate {
+        name: "world",
+        counter: 0,
+    };
     HtmlTemplate(template)
+}
+
+async fn hello_from_the_server() -> &'static str {
+    "Hello!"
 }
 
 struct HtmlTemplate<T>(T);
