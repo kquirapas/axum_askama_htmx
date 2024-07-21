@@ -1,1 +1,4 @@
 /target
+.editorconfig
+.env
+.DS_Store

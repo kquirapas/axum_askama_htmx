@@ -31,7 +31,7 @@ async fn main() -> anyhow::Result<()> {
 
     info!("initializing router...");
     // build our application with a single route
-    let assets_path = std::env::current_dir().unwrap();
+    let public_path = std::env::current_dir().unwrap();
     let port = 3000;
     let addr = std::net::SocketAddr::from(([0, 0, 0, 0], port));
 
@@ -41,8 +41,8 @@ async fn main() -> anyhow::Result<()> {
         .nest("/api", api_router)
         .route("/", get(index))
         .nest_service(
-            "/assets",
-            ServeDir::new(format!("{}/assets", assets_path.to_str().unwrap())),
+            "/public",
+            ServeDir::new(format!("{}/public", public_path.to_str().unwrap())),
         );
 
     // run our app with hyper, listening globally on port 3000

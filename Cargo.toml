@@ -1,5 +1,5 @@
 [package]
-name = "axum-askama"
+name = "minisite"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,6 +9,7 @@ edition = "2021"
 anyhow = "1.0.81"
 askama = "0.12.1"
 axum = "0.7.5"
+clap = "4.5.9"
 tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread", "full"] }
 tower = "0.4.13"
 tower-http = { version = "0.5.2", features = ["fs"] }
